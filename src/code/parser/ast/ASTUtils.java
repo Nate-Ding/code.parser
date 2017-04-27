@@ -77,6 +77,12 @@ public abstract class ASTUtils {
 		typeSimple2FullMap.put("Float", "java.lang.Float");
 		typeSimple2FullMap.put("Short", "java.lang.Short");
 		typeSimple2FullMap.put("Character", "java.lang.Character");
+		typeSimple2FullMap.put("Class", "java.lang.Class");
+		typeSimple2FullMap.put("Object", "java.lang.Object");
+
+		typeSimple2FullMap.put("List", "java.util.List");
+		typeSimple2FullMap.put("Set", "java.util.Set");
+		typeSimple2FullMap.put("Map", "java.util.Map");
 		if (root instanceof CompilationUnit) {
 			List<?> imports = ((CompilationUnit) root).imports();
 			for (Object object : imports) {
@@ -133,8 +139,10 @@ public abstract class ASTUtils {
 					SingleVariableDeclaration var = (SingleVariableDeclaration) object;
 					JSONObject paramJson = new JSONObject();
 					dataType = var.getType().toString();
-					int index = dataType.indexOf("[");
 					String suffix = "";
+					int index = dataType.indexOf("<");
+					if (index == -1)
+						index = dataType.indexOf("[");
 					if (index != -1) {
 						suffix = dataType.substring(index);
 						dataType = dataType.substring(0, index).trim();
