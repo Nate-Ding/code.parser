@@ -11,6 +11,8 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -23,6 +25,8 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TextElement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+
+import code.parser.Activator;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -37,7 +41,7 @@ public abstract class ASTUtils {
 	private final static String NAME = "name";
 	static {
 		try (InputStream is = ASTUtils.class
-				.getResourceAsStream("config.properties")) {
+				.getResourceAsStream("/config.properties")) {
 			Properties props = new Properties();
 			props.load(is);
 			String tagsValue = (String) props.get("javadoc.tags");
@@ -45,9 +49,12 @@ public abstract class ASTUtils {
 			for (int i = 0; i < tags.length; i++) {
 				tags[i] = tags[i].toUpperCase();
 			}
-
 		} catch (IOException e) {
-			e.printStackTrace();
+			Activator
+					.getDefault()
+					.getLog()
+					.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, e
+							.toString(), e));
 		}
 	}
 
@@ -193,7 +200,6 @@ public abstract class ASTUtils {
 					types[0] = node;
 					return false;
 				}
-
 			});
 		}
 		return types[0];
