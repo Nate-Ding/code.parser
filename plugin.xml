@@ -12,7 +12,7 @@
          <action
                class="code.parser.popup.actions.GenerateInterfaceData"
                id="code.parser.newAction"
-               label="GenerateInterfaceData">
+               label="Generate Java Data">
          </action>
       </objectContribution>
    </extension>
