@@ -1,6 +1,5 @@
 package code.parser.ast;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -8,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
@@ -58,79 +56,22 @@ public abstract class ASTUtils {
 		}
 	}
 
-	public static void main(String[] args) throws IOException {
-		String path = "E:/gitRepo/devclouds/src/com/ai/aif/devclouds/dev/service/interfaces/IDevProjResSV.java";
-		File javaFile = new File(path);
-		String content = FileUtils.readFileToString(javaFile);
-		JSONObject parse = parse(content);
-		System.out.println(parse);
-	}
-
 	public static JSONObject parse(String content) {
-		JSONObject classJson = new JSONObject();
-		ASTNode root = getAST(content);
 		HashMap<String, String> typeSimple2FullMap = new HashMap<String, String>();
-		typeSimple2FullMap.put("String", "java.lang.String");
-		typeSimple2FullMap.put("Long", "java.lang.Long");
-		typeSimple2FullMap.put("Integer", "java.lang.Integer");
-		typeSimple2FullMap.put("Double", "java.lang.Double");
-		typeSimple2FullMap.put("Float", "java.lang.Float");
-		typeSimple2FullMap.put("Short", "java.lang.Short");
-		typeSimple2FullMap.put("Character", "java.lang.Character");
-		typeSimple2FullMap.put("Class", "java.lang.Class");
-		typeSimple2FullMap.put("Object", "java.lang.Object");
+		initMapByCommonTypes(typeSimple2FullMap);
 
-		typeSimple2FullMap.put("List", "java.util.List");
-		typeSimple2FullMap.put("Set", "java.util.Set");
-		typeSimple2FullMap.put("Map", "java.util.Map");
-		if (root instanceof CompilationUnit) {
-			List<?> imports = ((CompilationUnit) root).imports();
-			for (Object object : imports) {
-				ImportDeclaration importDecl = (ImportDeclaration) object;
-				String fullname = importDecl.getName().toString();
-				String simplename = fullname.contains(".") ? StringUtils
-						.substringAfterLast(fullname, ".") : fullname;
-				typeSimple2FullMap.put(simplename, fullname);
-			}
-		}
+		ASTNode root = getAST(content);
+		initMapByImports(typeSimple2FullMap, root);
+
 		TypeDeclaration type = getType(root);
-		String _class = type.getName().getFullyQualifiedName();
-		classJson.put(CLASS, _class);
-		Javadoc typeJavadoc = type.getJavadoc();
-		if (typeJavadoc != null) {
-			String desc = "";
-			for (Object object : typeJavadoc.tags()) {
-				TagElement ele = (TagElement) object;
-				String tagName = ele.getTagName();
-				if (tagName == null) {
-					desc = getFragmentsText(ele.fragments());
-					break;
-				}
-			}
-			classJson.put(DESC, desc);
-		}
+
+		JSONObject classJson = getJavadocJson(type.getJavadoc());
+		classJson.put(CLASS, type.getName().getFullyQualifiedName());
 
 		JSONArray methodsJson = new JSONArray();
-		String desc = "";
 		for (MethodDeclaration methodDecl : type.getMethods()) {
 			Javadoc javadoc = methodDecl.getJavadoc();
-			JSONObject methodJson = new JSONObject();
-			if (javadoc != null) {
-				for (Object object : javadoc.tags()) {
-					TagElement ele = (TagElement) object;
-					String tagName = ele.getTagName();
-					if (tagName == null) {
-						desc = getFragmentsText(ele.fragments());
-					} else if (ArrayUtils.contains(tags, tagName.toUpperCase())) {
-						methodJson.put(
-								StringUtils.substringAfter(tagName, "@"),
-								getFragmentsText(ele.fragments()));
-					} else {
-						continue;
-					}
-				}
-			}
-
+			JSONObject methodJson = getJavadocJson(javadoc);
 			JSONArray paramsJson = new JSONArray();
 			String dataType = "";
 			String name = "";
@@ -163,13 +104,90 @@ public abstract class ASTUtils {
 
 			name = methodDecl.getName().toString();
 			methodJson.put(NAME, name);
-			methodJson.put(DESC, desc);
 			methodJson.put(PARAMS, paramsJson);
 			methodsJson.add(methodJson);
 		}
 
 		classJson.put(METHODS, methodsJson);
 		return classJson;
+	}
+
+	/**
+	 * @param javadoc
+	 * @param methodJson
+	 * @return
+	 */
+	private static JSONObject getJavadocJson(Javadoc javadoc) {
+		JSONObject javadocJson = new JSONObject();
+		if (javadoc == null) {
+			return javadocJson;
+		}
+		String desc = "";
+		for (Object object : javadoc.tags()) {
+			TagElement ele = (TagElement) object;
+			String tagName = ele.getTagName();
+			String value = getFragmentsText(ele.fragments());
+			if (tagName == null) {
+				desc = value;
+			} else if (ArrayUtils.contains(tags, tagName.toUpperCase())) {
+				String key = StringUtils.substringAfter(tagName, "@");
+				Object previson = javadocJson.put(key, value);
+				if (previson != null) {
+					JSONArray array = null;
+					if (previson instanceof JSONArray) {
+						array = (JSONArray) previson;
+					} else {
+						array = new JSONArray();
+						array.add(previson);
+					}
+
+					array.add(value);
+					javadocJson.put(key, array);
+				}
+			} else {
+				continue;
+			}
+		}
+		javadocJson.put(DESC, desc);
+		return javadocJson;
+	}
+
+	/**
+	 * @param typeSimple2FullMap
+	 * @param root
+	 */
+	private static void initMapByImports(
+			HashMap<String, String> typeSimple2FullMap, ASTNode root) {
+		if (root instanceof CompilationUnit) {
+			List<?> imports = ((CompilationUnit) root).imports();
+			for (Object object : imports) {
+				ImportDeclaration importDecl = (ImportDeclaration) object;
+				String fullname = importDecl.getName().toString();
+				String simplename = fullname.contains(".") ? StringUtils
+						.substringAfterLast(fullname, ".") : fullname;
+				typeSimple2FullMap.put(simplename, fullname);
+			}
+		}
+	}
+
+	/**
+	 * @param typeSimple2FullMap
+	 */
+	private static void initMapByCommonTypes(
+			HashMap<String, String> typeSimple2FullMap) {
+		typeSimple2FullMap.put("String", "java.lang.String");
+		typeSimple2FullMap.put("Long", "java.lang.Long");
+		typeSimple2FullMap.put("Integer", "java.lang.Integer");
+		typeSimple2FullMap.put("Double", "java.lang.Double");
+		typeSimple2FullMap.put("Float", "java.lang.Float");
+		typeSimple2FullMap.put("Short", "java.lang.Short");
+		typeSimple2FullMap.put("Character", "java.lang.Character");
+		typeSimple2FullMap.put("Class", "java.lang.Class");
+		typeSimple2FullMap.put("Object", "java.lang.Object");
+
+		typeSimple2FullMap.put("List", "java.util.List");
+		typeSimple2FullMap.put("Set", "java.util.Set");
+		typeSimple2FullMap.put("Map", "java.util.Map");
 	}
 
 	/**
