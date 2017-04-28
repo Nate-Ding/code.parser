@@ -44,44 +44,36 @@ public class GenerateJavaData implements IObjectActionDelegate {
 		if (selects == null) {
 			return;
 		}
+		try {
+			File outFile = null;
+			JSONArray array = new JSONArray();
+			for (Object object : selects) {
+				if (!(object instanceof IFile)) {
+					continue;
+				}
+				IFile ifile = (IFile) object;
+				if (outFile == null) {
+					outFile = ifile.getProject().getLocation()
+							.append("code.parser.result.json").toFile();
+				}
 
-		File outFile = null;
-		JSONArray array = new JSONArray();
-		for (Object object : selects) {
-			if (!(object instanceof IFile)) {
-				continue;
-			}
-			IFile ifile = (IFile) object;
-			if (outFile == null) {
-				outFile = ifile.getProject().getLocation()
-						.append("code.parser.result.json").toFile();
-			}
-
-			File file = ifile.getLocation().toFile();
-			try {
+				File file = ifile.getLocation().toFile();
 				JSONObject parse = ASTUtils.parse(FileUtils
 						.readFileToString(file));
 				array.add(parse);
-			} catch (IOException e) {
-				MessageDialog.openError(shell, "Parser",
-						"Generate java data parse Failed.\n" + e.toString());
-				return;
 			}
-		}
-		if (outFile != null)
-			try {
+			if (outFile != null) {
 				if (outFile.exists())
 					outFile.delete();
 				outFile.createNewFile();
 				FileUtils.writeStringToFile(outFile, array.toJSONString());
-			} catch (IOException e) {
-				MessageDialog.openError(shell, "Parser",
-						"Generate java data write Failed.\n" + e.toString());
-				return;
 			}
-
-		MessageDialog.openInformation(shell, "Parser",
-				"Generate java data was executed.");
+			MessageDialog.openInformation(shell, "Parser",
+					"Generate java data was executed.");
+		} catch (IOException e) {
+			MessageDialog.openError(shell, "Parser",
+					"Generate java data write Failed.\n" + e.toString());
+		}
 	}
 
 	/**

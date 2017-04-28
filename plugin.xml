@@ -14,6 +14,11 @@
                id="code.parser.newAction"
                label="Generate Java Data">
          </action>
+         <action
+               class="code.parser.popup.actions.GenerateJavaXls"
+               id="code.parser.newAction"
+               label="Generate Java xls">
+         </action>
       </objectContribution>
    </extension>
 
