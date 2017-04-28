@@ -18,7 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import code.parser.ast.ASTUtils;
 
-public class GenerateInterfaceData implements IObjectActionDelegate {
+public class GenerateJavaData implements IObjectActionDelegate {
 
 	private Shell shell;
 	private Object[] selects;
@@ -26,7 +26,7 @@ public class GenerateInterfaceData implements IObjectActionDelegate {
 	/**
 	 * Constructor for Action1.
 	 */
-	public GenerateInterfaceData() {
+	public GenerateJavaData() {
 		super();
 	}
 
@@ -64,7 +64,7 @@ public class GenerateInterfaceData implements IObjectActionDelegate {
 				array.add(parse);
 			} catch (IOException e) {
 				MessageDialog.openError(shell, "Parser",
-						"GenerateInterfaceData parse Failed.\n" + e.toString());
+						"Generate java data parse Failed.\n" + e.toString());
 				return;
 			}
 		}
@@ -76,12 +76,12 @@ public class GenerateInterfaceData implements IObjectActionDelegate {
 				FileUtils.writeStringToFile(outFile, array.toJSONString());
 			} catch (IOException e) {
 				MessageDialog.openError(shell, "Parser",
-						"GenerateInterfaceData write Failed.\n" + e.toString());
+						"Generate java data write Failed.\n" + e.toString());
 				return;
 			}
 
 		MessageDialog.openInformation(shell, "Parser",
-				"GenerateInterfaceData was executed.");
+				"Generate java data was executed.");
 	}
 
 	/**
