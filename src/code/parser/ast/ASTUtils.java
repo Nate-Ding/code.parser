@@ -229,7 +229,7 @@ public abstract class ASTUtils {
 		for (Object fragment : fragments) {
 			if (fragment instanceof TextElement) {
 				TextElement tEle = (TextElement) fragment;
-				list.add(tEle.getText());
+				list.add(tEle.getText().trim());
 			} else {
 				list.add(fragment.toString());
 			}
