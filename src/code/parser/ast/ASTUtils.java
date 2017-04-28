@@ -1,5 +1,6 @@
 package code.parser.ast;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
@@ -19,6 +21,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TextElement;
@@ -56,6 +59,14 @@ public abstract class ASTUtils {
 		}
 	}
 
+	public static void main(String[] args) throws IOException {
+		String path = "E:/gitRepo/devclouds/src/USPATest.java";
+		File javaFile = new File(path);
+		String content = FileUtils.readFileToString(javaFile);
+		JSONObject parse = parse(content);
+		System.out.println(parse);
+	}
+
 	public static JSONObject parse(String content) {
 		HashMap<String, String> typeSimple2FullMap = new HashMap<String, String>();
 		initMapByCommonTypes(typeSimple2FullMap);
@@ -66,7 +77,7 @@ public abstract class ASTUtils {
 		TypeDeclaration type = getType(root);
 
 		JSONObject classJson = getJavadocJson(type.getJavadoc());
-		classJson.put(CLASS, type.getName().getFullyQualifiedName());
+		classJson.put(CLASS, getTypeFullName(type));
 
 		JSONArray methodsJson = new JSONArray();
 		for (MethodDeclaration methodDecl : type.getMethods()) {
@@ -110,6 +121,24 @@ public abstract class ASTUtils {
 
 		classJson.put(METHODS, methodsJson);
 		return classJson;
+	}
+
+	/**
+	 * @param type
+	 * @return
+	 */
+	private static String getTypeFullName(TypeDeclaration type) {
+		ASTNode root = type.getRoot();
+		String name = type.getName().getFullyQualifiedName();
+		if (root instanceof CompilationUnit) {
+			PackageDeclaration packageDecl = ((CompilationUnit) root)
+					.getPackage();
+			if (packageDecl != null)
+				return new StringBuilder(packageDecl.getName()
+						.getFullyQualifiedName()).append(".").append(name)
+						.toString();
+		}
+		return name;
 	}
 
 	/**
