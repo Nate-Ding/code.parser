@@ -1,4 +1,4 @@
-#code.parser
+# code.parser
 
 ### 安装
 将附件中的jar包放到eclipse根目录的plugins目录中，重启eclipse。
