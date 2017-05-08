@@ -17,7 +17,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-public class Interfaces2CSVConvertor extends AbstractConvertor {
+/**
+ * Java data（JSONArray） 到excel的转换器
+ * 
+ * @author dinghn
+ *
+ */
+public class JavaData2XlsConvertor extends AbstractConvertor {
 	private static final String[] COLUMNS = { "接口", "描述", "方法", "方法描述" };
 	private static final String CLASS = "class";
 	private static final String DESC = "desc";
@@ -29,13 +35,13 @@ public class Interfaces2CSVConvertor extends AbstractConvertor {
 	private static final String DATATYPE = "dataType";
 
 	public static void main(String[] args) throws Exception {
-		String path = Interfaces2CSVConvertor.class.getProtectionDomain()
+		String path = JavaData2XlsConvertor.class.getProtectionDomain()
 				.getCodeSource().getLocation().getPath();
 		String parent = new File(path).getParent();
 		File outFile = new File(parent, OUT_CSV);
 		try (InputStream is = AbstractConvertor.class
 				.getResourceAsStream(IN_JSON)) {
-			new Interfaces2CSVConvertor().convert(
+			new JavaData2XlsConvertor().convert(
 					new String(IOUtils.toString(is)), outFile);
 		}
 	}
