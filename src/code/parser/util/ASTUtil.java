@@ -1,4 +1,4 @@
-package code.parser.ast;
+package code.parser.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import code.parser.Activator;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-public abstract class ASTUtils {
+public abstract class ASTUtil {
 	private static String[] tags = {};
 	private final static String CLASS = "class";
 	private final static String DESC = "desc";
@@ -41,7 +41,7 @@ public abstract class ASTUtils {
 	private final static String DATATYPE = "dataType";
 	private final static String NAME = "name";
 	static {
-		try (InputStream is = ASTUtils.class
+		try (InputStream is = ASTUtil.class
 				.getResourceAsStream("/config.properties")) {
 			Properties props = new Properties();
 			props.load(is);
