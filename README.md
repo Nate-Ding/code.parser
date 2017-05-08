@@ -1,7 +1,8 @@
 # code.parser
 
 ### 安装
-将附件中的jar包放到eclipse根目录的plugins目录中，重启eclipse。
+jar包从附件或者http://git.oschina.net/dingnate/code-parser/releases 获取。
+将jar包放到eclipse根目录的plugins目录中，重启eclipse。
 
 ### 使用
 在工程中选中java文件，可以看到右键菜单Generate Java Data，点击菜单执行成功后默认会在工程根目录下生成"code.parser.result.json"文件。
@@ -12,6 +13,3 @@
 
 ### 配置
 修改jar包中的config.properties文件的javadoc.tags的值可以收集不同tag的信息。多个tag名称以“,”分割，不能有空格。
-
-
-
