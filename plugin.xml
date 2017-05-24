@@ -10,9 +10,9 @@
             nameFilter="*.java"
             objectClass="org.eclipse.core.resources.IFile">
          <action
-               class="code.parser.popup.actions.GenerateJavaData"
+               class="code.parser.popup.actions.GenerateJavaJson"
                id="code.parser.newAction"
-               label="Generate Java Data">
+               label="Generate Java Json">
          </action>
          <action
                class="code.parser.popup.actions.GenerateJavaXls"
