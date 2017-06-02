@@ -10,7 +10,7 @@ jar包从附件或者http://git.oschina.net/dingnate/code-parser/releases 获取
 在工程中选中java文件，可以看到右键菜单Generate Java Json，点击菜单执行成功后默认会在工程根目录下生成"interfaceName.json"文件。
 该文件中保存了java文件的接口信息。
 
-在工程中选中java文件，可以看到右键菜单Generate Java Xls，点击菜单执行成功后默认会在工程根目录下生成"code.parser.result.xls"文件。
+在工程中选中java文件，可以看到右键菜单Generate Java Excel，点击菜单执行成功后默认会在工程根目录下生成"code.parser.result.xls"文件。
 该文件中保存了java文件的接口信息。
 
 在工程中选中生成的Json文件，可以看到右键菜单Generate Java Code，点击菜单执行成功后默认会在工程src目录的对应的包下生成"interfaceName.java"文件。
