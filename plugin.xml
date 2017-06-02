@@ -20,6 +20,17 @@
                label="Generate Java xls">
          </action>
       </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="code.parser.contribution1"
+            nameFilter="*.json"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="code.parser.popup.actions.GenerateJavaCode"
+               id="code.parser.newAction"
+               label="Generate Java Code">
+         </action>
+      </objectContribution>
    </extension>
 
 </plugin>

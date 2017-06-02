@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TextElement;
@@ -34,12 +35,16 @@ import com.alibaba.fastjson.JSONObject;
 
 public abstract class ASTUtil {
 	private static String[] tags = {};
-	private final static String CLASS = "class";
+	public final static String PACKAGE = "package";
 	private final static String DESC = "desc";
 	private final static String METHODS = "methods";
 	private final static String PARAMS = "params";
+	private final static String RET_PARAM = "retParam";
+	private final static String THROWS = "throws";
 	private final static String DATATYPE = "dataType";
-	private final static String NAME = "name";
+	private final static String JAVADOC_TAGS = "javadocTags";
+	public final static String NAME = "name";
+	public final static String VALUE = "value";
 	static {
 		try (InputStream is = ASTUtil.class
 				.getResourceAsStream("/config.properties")) {
@@ -77,7 +82,8 @@ public abstract class ASTUtil {
 		TypeDeclaration type = getType(root);
 
 		JSONObject classJson = getJavadocJson(type.getJavadoc());
-		classJson.put(CLASS, getTypeFullName(type));
+		classJson.put(PACKAGE, getPackage(type));
+		classJson.put(NAME, type.getName().getFullyQualifiedName());
 
 		JSONArray methodsJson = new JSONArray();
 		for (MethodDeclaration methodDecl : type.getMethods()) {
@@ -90,21 +96,8 @@ public abstract class ASTUtil {
 				if (object instanceof SingleVariableDeclaration) {
 					SingleVariableDeclaration var = (SingleVariableDeclaration) object;
 					JSONObject paramJson = new JSONObject();
-					dataType = var.getType().toString();
-					String suffix = "";
-					int index = dataType.indexOf("<");
-					if (index == -1)
-						index = dataType.indexOf("[");
-					if (index != -1) {
-						suffix = dataType.substring(index);
-						dataType = dataType.substring(0, index).trim();
-					}
-					String tmpDataType = typeSimple2FullMap.get(dataType);
-					if (tmpDataType != null)
-						dataType = tmpDataType;
-					if (StringUtils.isNotEmpty(suffix))
-						dataType += suffix;
-
+					dataType = getTypeFullName(typeSimple2FullMap, var
+							.getType().toString());
 					name = var.getName().toString();
 					paramJson.put(DATATYPE, dataType);
 					paramJson.put(NAME, name);
@@ -115,30 +108,66 @@ public abstract class ASTUtil {
 
 			name = methodDecl.getName().toString();
 			methodJson.put(NAME, name);
-			methodJson.put(PARAMS, paramsJson);
+			if (!paramsJson.isEmpty())
+				methodJson.put(PARAMS, paramsJson);
+			methodJson.put(
+					RET_PARAM,
+					getTypeFullName(typeSimple2FullMap, methodDecl
+							.getReturnType2().toString()));
+
+			@SuppressWarnings("deprecation")
+			List<?> exceptions = methodDecl.thrownExceptions();
+			JSONArray exceptionArray = new JSONArray();
+			for (Object object : exceptions) {
+				if (object instanceof SimpleName)
+					exceptionArray.add(((SimpleName) object).toString());
+			}
+			if (!exceptionArray.isEmpty())
+				methodJson.put(THROWS, exceptionArray);
 			methodsJson.add(methodJson);
 		}
-
-		classJson.put(METHODS, methodsJson);
+		if (!methodsJson.isEmpty())
+			classJson.put(METHODS, methodsJson);
 		return classJson;
+	}
+
+	/**
+	 * @param typeSimple2FullMap
+	 * @param var
+	 * @return
+	 */
+	private static String getTypeFullName(
+			HashMap<String, String> typeSimple2FullMap, String typeName) {
+		String dataType = typeName;
+		String suffix = "";
+		int index = dataType.indexOf("<");
+		if (index == -1)
+			index = dataType.indexOf("[");
+		if (index != -1) {
+			suffix = dataType.substring(index);
+			dataType = dataType.substring(0, index).trim();
+		}
+		String tmpDataType = typeSimple2FullMap.get(dataType);
+		if (tmpDataType != null)
+			dataType = tmpDataType;
+		if (StringUtils.isNotEmpty(suffix))
+			dataType += suffix;
+		return dataType;
 	}
 
 	/**
 	 * @param type
 	 * @return
 	 */
-	private static String getTypeFullName(TypeDeclaration type) {
+	private static String getPackage(TypeDeclaration type) {
 		ASTNode root = type.getRoot();
-		String name = type.getName().getFullyQualifiedName();
 		if (root instanceof CompilationUnit) {
 			PackageDeclaration packageDecl = ((CompilationUnit) root)
 					.getPackage();
 			if (packageDecl != null)
-				return new StringBuilder(packageDecl.getName()
-						.getFullyQualifiedName()).append(".").append(name)
-						.toString();
+				return packageDecl.getName().getFullyQualifiedName();
 		}
-		return name;
+		return null;
 	}
 
 	/**
@@ -152,6 +181,7 @@ public abstract class ASTUtil {
 			return javadocJson;
 		}
 		String desc = "";
+		JSONArray javadocTagsJson = new JSONArray();
 		for (Object object : javadoc.tags()) {
 			TagElement ele = (TagElement) object;
 			String tagName = ele.getTagName();
@@ -159,25 +189,17 @@ public abstract class ASTUtil {
 			if (tagName == null) {
 				desc = value;
 			} else if (ArrayUtils.contains(tags, tagName.toUpperCase())) {
-				String key = StringUtils.substringAfter(tagName, "@");
-				Object previson = javadocJson.put(key, value);
-				if (previson != null) {
-					JSONArray array = null;
-					if (previson instanceof JSONArray) {
-						array = (JSONArray) previson;
-					} else {
-						array = new JSONArray();
-						array.add(previson);
-					}
-
-					array.add(value);
-					javadocJson.put(key, array);
-				}
+				JSONObject tagJson = new JSONObject();
+				tagJson.put(NAME, tagName);
+				tagJson.put(VALUE, value);
+				javadocTagsJson.add(tagJson);
 			} else {
 				continue;
 			}
 		}
 		javadocJson.put(DESC, desc);
+		if (!javadocTagsJson.isEmpty())
+			javadocJson.put(JAVADOC_TAGS, javadocTagsJson);
 		return javadocJson;
 	}
 

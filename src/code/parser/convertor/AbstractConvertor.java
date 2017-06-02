@@ -14,19 +14,21 @@ import org.apache.commons.io.FileUtils;
  */
 public abstract class AbstractConvertor {
 	/**
+	 * 创建文件
+	 * 
 	 * @return
 	 * @throws IOException
 	 */
-	private void createOutFile(File outFile) throws IOException {
-		if (!outFile.getParentFile().exists())
-			outFile.getParentFile().mkdirs();
-		if (outFile.exists())
-			outFile.delete();
-		outFile.createNewFile();
+	public static void createFile(File file) throws IOException {
+		if (!file.getParentFile().exists())
+			file.getParentFile().mkdirs();
+		if (file.exists())
+			file.delete();
+		file.createNewFile();
 	}
 
 	public void convert(String content, File outFile) throws Exception {
-		createOutFile(outFile);
+		createFile(outFile);
 		FileUtils.writeByteArrayToFile(outFile, doConvert(content));
 	}
 

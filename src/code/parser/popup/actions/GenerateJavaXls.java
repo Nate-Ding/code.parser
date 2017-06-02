@@ -15,7 +15,7 @@ import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import code.parser.convertor.JavaData2XlsConvertor;
+import code.parser.convertor.JavaCode2XlsConvertor;
 import code.parser.dialog.FileSaveDialog;
 import code.parser.util.ASTUtil;
 import code.parser.util.UIUtil;
@@ -80,7 +80,7 @@ public class GenerateJavaXls implements IObjectActionDelegate {
 
 			File outFile = new File(path);
 			outFile.createNewFile();
-			new JavaData2XlsConvertor().convert(array.toJSONString(), outFile);
+			new JavaCode2XlsConvertor().convert(array.toJSONString(), outFile);
 			UIUtil.refresh(project, outFile);
 			MessageDialog.openInformation(shell, "Parser",
 					"Generate java xls was executed.");
@@ -99,5 +99,4 @@ public class GenerateJavaXls implements IObjectActionDelegate {
 		IStructuredSelection ss = (IStructuredSelection) selection;
 		selects = ss.toArray();
 	}
-
 }

@@ -13,6 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import code.parser.util.ASTUtil;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -23,25 +25,23 @@ import com.alibaba.fastjson.JSONObject;
  * @author dinghn
  *
  */
-public class JavaData2XlsConvertor extends AbstractConvertor {
+public class JavaCode2XlsConvertor extends AbstractConvertor {
 	private static final String[] COLUMNS = { "接口", "描述", "方法", "方法描述" };
-	private static final String CLASS = "class";
 	private static final String DESC = "desc";
 	private static final String METHODS = "methods";
 	private static final String OUT_CSV = "interfaces_dinghn.xls";
 	private static final String IN_JSON = "/dinghn/interfaces_dinghn.json";
-	private static final String NAME = "name";
 	private static final String PARAMS = "params";
 	private static final String DATATYPE = "dataType";
 
 	public static void main(String[] args) throws Exception {
-		String path = JavaData2XlsConvertor.class.getProtectionDomain()
+		String path = JavaCode2XlsConvertor.class.getProtectionDomain()
 				.getCodeSource().getLocation().getPath();
 		String parent = new File(path).getParent();
 		File outFile = new File(parent, OUT_CSV);
 		try (InputStream is = AbstractConvertor.class
 				.getResourceAsStream(IN_JSON)) {
-			new JavaData2XlsConvertor().convert(
+			new JavaCode2XlsConvertor().convert(
 					new String(IOUtils.toString(is)), outFile);
 		}
 	}
@@ -64,7 +64,11 @@ public class JavaData2XlsConvertor extends AbstractConvertor {
 				int colCount = 0;
 				XSSFRow row = sheet.createRow(rowCount++);
 				JSONObject obj = (JSONObject) item;
-				String _class = obj.getString(CLASS);
+				String _class = obj.getString(ASTUtil.NAME);
+				String _package = obj.getString(ASTUtil.PACKAGE);
+				if (StringUtils.isNotEmpty(_package))
+					_class = new StringBuilder(_package).append(".")
+							.append(_class).toString();
 				String desc = obj.getString(DESC);
 				createCell(row, colCount++).setCellValue(_class);
 				createCell(row, colCount++).setCellValue(desc);
@@ -79,12 +83,13 @@ public class JavaData2XlsConvertor extends AbstractConvertor {
 					for (Object param : params) {
 						JSONObject p = (JSONObject) param;
 						pb.append(p.getString(DATATYPE)).append(" ")
-								.append(p.getString(NAME)).append(",");
+								.append(p.getString(ASTUtil.NAME)).append(",");
 					}
 					if (pb.length() > 0)
 						pb.deleteCharAt(pb.length() - 1);
 					createCell(row, colCount++).setCellValue(
-							new StringBuilder().append(m.getString(NAME))
+							new StringBuilder()
+									.append(m.getString(ASTUtil.NAME))
 									.append("(").append(pb).append(")")
 									.toString());
 					createCell(row, colCount++).setCellValue(

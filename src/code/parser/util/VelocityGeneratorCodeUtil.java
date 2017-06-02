@@ -27,7 +27,7 @@ public final class VelocityGeneratorCodeUtil {
 		super();
 	}
 
-	public static String getContextForTemplatePath(Reader reader, Map contextMap)
+	public static String getContentForTemplatePath(Reader reader, Map contextMap)
 			throws Exception {
 		VelocityContext context = new VelocityContext();
 		Iterator it = contextMap.entrySet().iterator();
@@ -48,12 +48,12 @@ public final class VelocityGeneratorCodeUtil {
 		return result;
 	}
 
-	public static String getContextForTemplatePath(String path, Map contextMap)
+	public static String getContentForTemplatePath(String path, Map contextMap)
 			throws Exception {
 		try (InputStream is = VelocityGeneratorCodeUtil.class
 				.getResourceAsStream(path);
 				Reader reader = new InputStreamReader(is)) {
-			return getContextForTemplatePath(reader, contextMap);
+			return getContentForTemplatePath(reader, contextMap);
 		}
 	}
 
