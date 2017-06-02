@@ -11,8 +11,6 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -23,12 +21,11 @@ import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TextElement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-
-import code.parser.Activator;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -36,6 +33,7 @@ import com.alibaba.fastjson.JSONObject;
 public abstract class ASTUtil {
 	private static String[] tags = {};
 	public final static String PACKAGE = "package";
+	public final static String SUPER_INTERFACE = "superInterfaces";
 	private final static String DESC = "desc";
 	private final static String METHODS = "methods";
 	private final static String PARAMS = "params";
@@ -56,11 +54,7 @@ public abstract class ASTUtil {
 				tags[i] = tags[i].toUpperCase();
 			}
 		} catch (IOException e) {
-			Activator
-					.getDefault()
-					.getLog()
-					.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, e
-							.toString(), e));
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -80,11 +74,19 @@ public abstract class ASTUtil {
 		initMapByImports(typeSimple2FullMap, root);
 
 		TypeDeclaration type = getType(root);
-
+		List<?> superInterfaceTypes = type.superInterfaceTypes();
+		JSONArray superInterfaces = new JSONArray();
+		for (Object object : superInterfaceTypes) {
+			if (object instanceof SimpleType)
+				superInterfaces.add(getTypeFullName(typeSimple2FullMap,
+						((SimpleType) object).getName().getFullyQualifiedName()
+								.toString()));
+		}
 		JSONObject classJson = getJavadocJson(type.getJavadoc());
 		classJson.put(PACKAGE, getPackage(type));
 		classJson.put(NAME, type.getName().getFullyQualifiedName());
-
+		if (!superInterfaces.isEmpty())
+			classJson.put(SUPER_INTERFACE, superInterfaces);
 		JSONArray methodsJson = new JSONArray();
 		for (MethodDeclaration methodDecl : type.getMethods()) {
 			Javadoc javadoc = methodDecl.getJavadoc();

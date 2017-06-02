@@ -13,7 +13,8 @@ package $java_json.package;
 #end
  */
 ## interface declare
-public interface $java_json.name {
+public interface $java_json.name #if($java_json.superInterfaces)extends #set($firstParam=1)#foreach($e in $java_json.superInterfaces)#if($firstParam==1)#set($firstParam=0)#else, #end$e#end#end
+{
 #foreach($method in $java_json.methods)
 ## mehtod comment
 	/**
@@ -26,7 +27,6 @@ public interface $java_json.name {
 	#end
 	 */
 ## mehtod declare
-	$method.retParam $method.name (#set($firstParam=1)#foreach($param in $method.params)#if($firstParam==1)#set($firstParam=0)#else, #end$param.dataType $param.name#end)#if($method.throws) throws #set($firstParam=1)#foreach($throw in $method.throws)#if($firstParam==1)#set($firstParam=0)#else, #end $throw#end#end;	
+	$method.retParam $method.name (#set($firstParam=1)#foreach($param in $method.params)#if($firstParam==1)#set($firstParam=0)#else, #end$param.dataType $param.name#end)#if($method.throws) throws #set($firstParam=1)#foreach($throw in $method.throws)#if($firstParam==1)#set($firstParam=0)#else, #end$throw#end#end;
 #end
 }
-
