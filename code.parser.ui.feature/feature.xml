@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="code.parser.ui.feature"
-      label="ui.feature"
-      version="1.0.3.qualifier">
+      label="code.parser.ui.feature"
+      version="1.0.4.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -20,14 +20,14 @@
          id="code.parser.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.4.qualifier"
          unpack="false"/>
 
    <plugin
          id="code.parser.ui"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.4.qualifier"
          unpack="false"/>
 
 </feature>

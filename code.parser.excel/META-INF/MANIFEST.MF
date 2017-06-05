@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Excel
 Bundle-SymbolicName: code.parser.ui.excel;singleton:=true
-Bundle-Version: 1.0.3.qualifier
+Bundle-Version: 1.0.4.qualifier
 Bundle-Activator: code.parser.ui.excel.Activator
 Require-Bundle: org.apache.commons.io;bundle-version="2.0.1",
  org.apache.commons.lang;bundle-version="2.6.0",
