@@ -1,15 +1,15 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Excel
-Bundle-SymbolicName: code.parser.excel;singleton:=true
+Bundle-SymbolicName: code.parser.ui.excel;singleton:=true
 Bundle-Version: 1.0.3.qualifier
-Bundle-Activator: code.parser.excel.Activator
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- code.parser;bundle-version="1.0.2",
- org.apache.commons.io,
- org.apache.commons.lang,
- org.eclipse.core.resources
+Bundle-Activator: code.parser.ui.excel.Activator
+Require-Bundle: org.apache.commons.io;bundle-version="2.0.1",
+ org.apache.commons.lang;bundle-version="2.6.0",
+ org.eclipse.core.resources,
+ code.parser.ui;bundle-version="1.0.3",
+ org.eclipse.core.runtime;bundle-version="3.10.0",
+ org.eclipse.ui.workbench;bundle-version="3.106.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/poi-3.11.jar,
@@ -17,3 +17,11 @@ Bundle-ClassPath: lib/poi-3.11.jar,
  lib/poi-ooxml-schemas-3.11.jar,
  lib/xmlbeans-2.6.0.jar,
  .
+Import-Package: code.parser.core.convertor,
+ code.parser.core.util,
+ com.alibaba.fastjson,
+ org.eclipse.jface.action,
+ org.eclipse.jface.dialogs,
+ org.eclipse.jface.viewers,
+ org.eclipse.swt.widgets,
+ org.eclipse.ui

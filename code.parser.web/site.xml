@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/code.parser.ui.excel.feature_1.0.3.201706051105.jar" id="code.parser.ui.excel.feature" version="1.0.3.201706051105">
+      <category name="code.parser.category"/>
+   </feature>
+   <feature url="features/code.parser.ui.feature_1.0.3.201706051105.jar" id="code.parser.ui.feature" version="1.0.3.201706051105">
+      <category name="code.parser.category"/>
+   </feature>
+   <category-def name="code.parser.category" label="code.parser.category">
+      <description>
+         code.parser.category
+      </description>
+   </category-def>
+</site>
