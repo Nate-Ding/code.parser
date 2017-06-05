@@ -18,4 +18,4 @@ jar包从附件或者http://git.oschina.net/dingnate/code-parser/releases 获取
 
 
 ### 配置
-修改jar包中的config.properties文件的javadoc.tags的值可以收集不同tag的信息。多个tag名称以“,”分割，不能有空格。
+修改code.parser.core_xx.jar包中的config.properties文件的javadoc.tags的值可以收集不同tag的信息。多个tag名称以“,”分割，不能有空格。
