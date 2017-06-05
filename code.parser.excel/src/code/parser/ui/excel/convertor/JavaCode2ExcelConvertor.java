@@ -38,7 +38,7 @@ public class JavaCode2ExcelConvertor implements IConvertor {
 	 * @return
 	 * @throws IOException
 	 */
-	public byte[] convert(String content) throws IOException {
+	public String convert(String content) throws IOException {
 		try (XSSFWorkbook wb = new XSSFWorkbook()) {
 			XSSFSheet sheet = wb.createSheet();
 			JSONArray root = JSON.parseArray(content);
@@ -88,7 +88,7 @@ public class JavaCode2ExcelConvertor implements IConvertor {
 			}
 			try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 				wb.write(out);
-				return out.toByteArray();
+				return out.toString();
 			}
 		}
 	}

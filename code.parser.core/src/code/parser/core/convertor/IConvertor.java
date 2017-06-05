@@ -11,5 +11,5 @@ package code.parser.core.convertor;
  *
  */
 public interface IConvertor {
-	public byte[] convert(String content) throws Exception;
+	public String convert(String content) throws Exception;
 }

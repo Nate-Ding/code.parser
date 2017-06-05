@@ -20,8 +20,8 @@ public class JavaCode2JsonConvertor implements IConvertor {
 	 * @return
 	 * @throws Exception
 	 */
-	public byte[] convert(String content) throws Exception {
+	public String convert(String content) throws Exception {
 		JSONObject parse = ASTUtil.parse(content);
-		return parse.toJSONString().getBytes();
+		return parse.toJSONString();
 	}
 }

@@ -75,9 +75,9 @@ public class GenerateJavaJson implements IObjectActionDelegate {
 				File outFile = new File(path, name);
 				String content = FileUtils.readFileToString(ifile.getLocation()
 						.toFile());
-				byte[] data = convertor.convert(content);
+				String data = convertor.convert(content);
 				FileUtil.createFile(outFile);
-				FileUtils.writeByteArrayToFile(outFile, data);
+				FileUtils.writeStringToFile(outFile, data);
 				UIUtil.refresh(project, outFile);
 			}
 

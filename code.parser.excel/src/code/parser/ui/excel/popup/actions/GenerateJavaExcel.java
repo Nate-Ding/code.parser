@@ -80,10 +80,10 @@ public class GenerateJavaExcel implements IObjectActionDelegate {
 			}
 
 			File outFile = new File(path);
-			byte[] data = new JavaCode2ExcelConvertor().convert(array
+			String data = new JavaCode2ExcelConvertor().convert(array
 					.toJSONString());
 			FileUtil.createFile(outFile);
-			FileUtils.writeByteArrayToFile(outFile, data);
+			FileUtils.writeStringToFile(outFile, data);
 			UIUtil.refresh(project, outFile);
 			MessageDialog.openInformation(shell, "Parser",
 					"Generate java xls was executed.");

@@ -26,11 +26,11 @@ public class JavaJson2CodeConvertor implements IConvertor {
 	 * @return
 	 * @throws Exception
 	 */
-	public byte[] convert(String content) throws Exception {
+	public String convert(String content) throws Exception {
 		Map<String, Object> contextMap = new HashMap<String, Object>();
 		contextMap.put(JAVA_JSON, JSON.parseObject(content));
 		String code_content = VelocityUtil.getContentForTemplatePath(
 				INTERFACE_VM, contextMap);
-		return code_content.getBytes();
+		return code_content;
 	}
 }

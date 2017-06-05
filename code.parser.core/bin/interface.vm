@@ -1,0 +1,32 @@
+#if($java_json.package)
+package $java_json.package;
+
+## interface comment
+#end
+/**
+#if($java_json.desc)
+ * $java_json.desc
+#end
+ *
+#foreach($tag in $java_json.javadocTags)
+ * $tag.name $tag.value
+#end
+ */
+## interface declare
+public interface $java_json.name #if($java_json.superInterfaces)extends #set($firstParam=1)#foreach($e in $java_json.superInterfaces)#if($firstParam==1)#set($firstParam=0)#else, #end$e#end#end
+{
+#foreach($method in $java_json.methods)
+## mehtod comment
+	/**
+	#if($method.desc)
+	 * $method.desc
+	#end
+	 *
+	#foreach($tag in $method.javadocTags)
+	 * $tag.name $tag.value
+	#end
+	 */
+## mehtod declare
+	$method.retParam $method.name (#set($firstParam=1)#foreach($param in $method.params)#if($firstParam==1)#set($firstParam=0)#else, #end$param.dataType $param.name#end)#if($method.throws) throws #set($firstParam=1)#foreach($throw in $method.throws)#if($firstParam==1)#set($firstParam=0)#else, #end$throw#end#end;
+#end
+}

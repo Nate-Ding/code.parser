@@ -84,9 +84,9 @@ public class GenerateJavaCode implements IObjectActionDelegate {
 					path = new StringBuilder(path).append("/")
 							.append(_package.replace('.', '/')).toString();
 				File javaFile = new File(path, name);
-				byte[] data = convertor.convert(jobject.toJSONString());
+				String data = convertor.convert(jobject.toJSONString());
 				FileUtil.createFile(javaFile);
-				FileUtils.writeByteArrayToFile(javaFile, data);
+				FileUtils.writeStringToFile(javaFile, data);
 				UIUtil.refresh(project, javaFile);
 			}
 			MessageDialog.openInformation(shell, "code.generate",
