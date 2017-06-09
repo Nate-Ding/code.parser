@@ -4,7 +4,7 @@
 jar包从附件或者http://git.oschina.net/dingnate/code-parser/releases 获取。
 将jar包放到eclipse根目录的plugins目录中，重启eclipse。
 
-注：Mini包 请下载code.parser_xx.jar，支持Java接口文件和Json的转换。
+注：Mini包 请下载code.parser.code_xx.jar和code.parser.ui_xx.jar，支持Java接口文件和Json的转换。
 
 ### 使用
 在工程中选中java文件，可以看到右键菜单Generate Java Json，点击菜单执行成功后默认会在工程根目录下生成"interfaceName.json"文件。
