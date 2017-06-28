@@ -21,7 +21,7 @@ jar包从附件或者http://git.oschina.net/dingnate/code-parser/releases 获取
 修改code.parser.core_xx.jar包中的config.properties文件的javadoc.tags的值可以收集不同tag的信息。多个tag名称以“,”分割，不能有空格。
 
 
-###用途
+### 用途
 这个项目是Eclipse Plug-in 插件。不了解的话可以百度一下或查看 http://www.eclipse.org/ 
     
      **使用方法：** 
