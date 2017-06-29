@@ -24,10 +24,10 @@ jar包从附件或者http://git.oschina.net/dingnate/code-parser/releases 获取
 ### 用途
 这个项目是Eclipse Plug-in 插件。不了解的话可以百度一下或查看 http://www.eclipse.org/ 
     
-     **使用方法：** 
+ **使用方法：** 
 直接把Jar包放到Eclipse的根目录下的plugins目录中，重启Eclipse即可使用。 
-  
-     ** 使用场景** 主要是使用Eclipse进行Java后端服务开发时 
+
+ **使用场景：**  主要是使用Eclipse进行Java后端服务开发时  
 1.给前端提供服务接口的JSON格式数据（包含接口声明信息，出入参报文等 javadoc标签自定义）。该工具可以把Java接口一键转成JSON数据，直接提供给前端开发。 
 
 2.给二次开发的人员提供接口说明的Excel文档。该工具可以把Java接口一键转成Excel文档。
