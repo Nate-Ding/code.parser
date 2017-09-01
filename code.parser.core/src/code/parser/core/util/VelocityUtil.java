@@ -67,7 +67,26 @@ public final class VelocityUtil {
 			props.setProperty(Velocity.INPUT_ENCODING, "UTF-8");
 			props.setProperty("class.resource.loader.class",
 					"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-			VelocityUtil.ve.init(props);
+			
+			
+			// fix bug for
+			// org.apache.velocity.exception.VelocityException: The specified
+			// class for ResourceManager
+			// (org.apache.velocity.runtime.resource.ResourceManagerImpl) does
+			// not implement
+			// org.apache.velocity.runtime.resource.ResourceManager; Velocity is
+			// not initialized correctly.
+
+			// VelocityUtil.ve.init(props);
+			Thread thread = Thread.currentThread();
+			ClassLoader loader = thread.getContextClassLoader();
+			thread.setContextClassLoader(VelocityUtil.class.getClassLoader());
+			try {
+				// ... Velocity library call(s) ...
+				VelocityUtil.ve.init(props);
+			} finally {
+				thread.setContextClassLoader(loader);
+			}
 		}
 		return VelocityUtil.ve;
 	}
