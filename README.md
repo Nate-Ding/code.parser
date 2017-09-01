@@ -35,3 +35,13 @@ jar包从附件或者http://git.oschina.net/dingnate/code-parser/releases 获取
 3.在使用RPC或微服务框架时，可以更具导出的接口JSON数据，批量更新注册接口服务。 
 
 4.在使用RPC或微服务框架时，可以根据注册的信息生成的JSON数据反向生成接口代码，节省编码时间。 
+
+
+### 解决的问题
+1.Generate java json write Failed.  
+java.lang.NullPointerException  
+org.apache.velocity.exception.VelocityException: The specified class for 
+ResourceManager
+(org.apache.velocity.runtime.resource.ResourceManagerImpl) 
+does not implement org.apache.velocity.runtime.resource.ResourceManager; 
+Velocity is not initialized correctly.
