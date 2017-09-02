@@ -1,10 +1,11 @@
 # code.parser
 
 ### 安装
-jar包从附件或者http://git.oschina.net/dingnate/code-parser/releases 获取。
-将jar包放到eclipse根目录的plugins目录中，重启eclipse。
+jar包从附件或者http://git.oschina.net/dingnate/code-parser/releases 获取。  
+1.将jar包放到eclipse根目录的plugins目录中，重启eclipse。  
+2.Help->install new software...->Add->Achive->Next...>Accept->Finish, 重启eclipse。
 
-注：Mini包 请下载code.parser.code_xx.jar和code.parser.ui_xx.jar，支持Java接口文件和Json的转换。
+注：支持Excel导出的Jar较大，Mini包 请下载code.parser.code_xx.jar和code.parser.ui_xx.jar，支持Java接口文件和Json的转换。
 
 ### 使用
 在工程中选中java文件，可以看到右键菜单Generate Java Json，点击菜单执行成功后默认会在工程根目录下生成"interfaceName.json"文件。
@@ -35,3 +36,13 @@ jar包从附件或者http://git.oschina.net/dingnate/code-parser/releases 获取
 3.在使用RPC或微服务框架时，可以更具导出的接口JSON数据，批量更新注册接口服务。 
 
 4.在使用RPC或微服务框架时，可以根据注册的信息生成的JSON数据反向生成接口代码，节省编码时间。 
+
+
+### 解决的问题
+1.Generate java json write Failed.  
+java.lang.NullPointerException  
+org.apache.velocity.exception.VelocityException: The specified class for 
+ResourceManager
+(org.apache.velocity.runtime.resource.ResourceManagerImpl) 
+does not implement org.apache.velocity.runtime.resource.ResourceManager; 
+Velocity is not initialized correctly.
